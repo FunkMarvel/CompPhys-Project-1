@@ -1,5 +1,4 @@
 # Project 1 FYS3150, Anders P. Åsbø
-# general tridiagonal matrix.
 import data_generator as gen
 import numpy as np
 import os
@@ -28,7 +27,7 @@ def init_data():
     dir = os.path.dirname(os.path.realpath(__file__))  # current directory.
 
     # defining number of rows and columns in matrix:
-    N = int(eval(input("Specify number of data points N: ")))
+    N = int(input("Specify number of data points N: "))
     # defining common label for data files:
     name = input("Label of data-sets without file extension: ")
 
@@ -42,8 +41,6 @@ def init_data():
     u = np.empty(N)  # array for unkown values.
     d = np.full(N, 2)  # array for diagonal elements.
     d_prime = np.empty(N)  # array for diagonal after decom. and sub.
-    a = np.full(N-1, -1)  # array for upper, off-center diagonal.
-    b = np.full(N-1, -1)  # array for lower, off-center diagonal.
     # array for g in matrix eq. Au=g.
     f = np.loadtxt("%s/data_files/%s.dat" % (dir, name))
     g = f*h**2
@@ -55,17 +52,17 @@ def decomp_and_forward_and_backward_sub():
     and backward substitution."""
     # setting border conditions:
     u[0], u[-1] = 0, 0
-    d_prime[0] = d[0]
+    d_prime[0] = 2
     g_prime[0] = g[0]
-
     start = time.default_timer()
     for i in range(1, len(u)):  # performing decomp. and forward sub.
-        decomp_factor = b[i-1]/d_prime[i-1]
-        d_prime[i] = d[i] - a[i-1]*decomp_factor
-        g_prime[i] = g[i] - g_prime[i-1]*decomp_factor
+        decomp_factor = 1/d_prime[i-1]
+        d_prime[i] = 2 - decomp_factor
+        g_prime[i] = g[i] + g_prime[i-1]*decomp_factor
 
     for i in reversed(range(1, len(u)-1)):  # performing backward sub.
-        u[i] = (g_prime[i]-a[i]*u[i+1])/d_prime[i]
+        u[i] = (g_prime[i] + u[i+1])*decomp_factor
+
     end = time.default_timer()
     print("Time spent on loop %e" % (end-start))
 
