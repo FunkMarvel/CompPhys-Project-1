@@ -8,7 +8,7 @@ import timeit as time
 
 def main():
     """Program solves matrix equation Au=f, using decomposition, forward
-    substitution and backward substitution, for a tridiagonal, NxN matrix A."""
+    substitution and backward substitution, for a Toeplitz, NxN matrix A."""
     init_data()  # initialising data
 
     # performing decomp. and forward and backward sub.:
@@ -27,7 +27,7 @@ def init_data():
     dir = os.path.dirname(os.path.realpath(__file__))  # current directory.
 
     # defining number of rows and columns in matrix:
-    N = int(input("Specify number of data points N: "))
+    N = int(eval(input("Specify number of data points N: ")))
     # defining common label for data files:
     name = input("Label of data-sets without file extension: ")
 
@@ -39,9 +39,8 @@ def init_data():
                           (dir, name))
 
     u = np.empty(N)  # array for unkown values.
-    d = np.full(N, 2)  # array for diagonal elements.
-    d_prime = np.empty(N)  # array for diagonal after decom. and sub.
-    # array for g in matrix eq. Au=g.
+    s = np.arange(1, N+1)
+    d_prime = 2*(s)/(2*(s+1))  # pre-calculating the 1/d_prime factors.
     f = np.loadtxt("%s/data_files/%s.dat" % (dir, name))
     g = f*h**2
     g_prime = np.empty(N)  # array for g after decomp. and sub.
@@ -50,18 +49,15 @@ def init_data():
 def decomp_and_forward_and_backward_sub():
     """Function that performs the matrix decomposition and forward
     and backward substitution."""
-    # setting border conditions:
+    # setting boundary conditions:
     u[0], u[-1] = 0, 0
-    d_prime[0] = 2
     g_prime[0] = g[0]
     start = time.default_timer()
     for i in range(1, len(u)):  # performing decomp. and forward sub.
-        decomp_factor = 1/d_prime[i-1]
-        d_prime[i] = 2 - decomp_factor
-        g_prime[i] = g[i] + g_prime[i-1]*decomp_factor
+        g_prime[i] = g[i] + g_prime[i-1]*d_prime[i-1]
 
     for i in reversed(range(1, len(u)-1)):  # performing backward sub.
-        u[i] = (g_prime[i] + u[i+1])*decomp_factor
+        u[i] = (g_prime[i] + u[i+1])*d_prime[i-1]
 
     end = time.default_timer()
     print("Time spent on loop %e" % (end-start))

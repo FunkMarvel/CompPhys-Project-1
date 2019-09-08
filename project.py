@@ -53,7 +53,7 @@ def init_data():
 def decomp_and_forward_and_backward_sub():
     """Function that performs the matrix decomposition and forward
     and backward substitution."""
-    # setting border conditions:
+    # setting boundary conditions:
     u[0], u[-1] = 0, 0
     d_prime[0] = d[0]
     g_prime[0] = g[0]
