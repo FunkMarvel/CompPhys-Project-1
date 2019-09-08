@@ -1,5 +1,8 @@
 # create data set for numerical testing
 import numpy as np
+import os
+
+dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def main():
@@ -11,11 +14,13 @@ def generate_data(x, name):
     """Function that generates a set of u''(x) data, as well as the
     corresponding, analytical u(x). The data is saved to text"""
     data = 100*np.exp(-10*x)
-    np.savetxt("%s.dat" % name, data, fmt="%f")
+    path = "%s/data_files/%s.dat" % (dir, name)
+    np.savetxt(path, data, fmt="%f")
 
-    analytical_solution = 1-(1-np.exp(-10))*x-np.exp(-10*x)
-    anal_name = "analytical_solution_for_%s.dat" % name
-    np.savetxt(anal_name, analytical_solution)
+    x_prime = np.linspace(x[0], x[-1], 1000)
+    analytical_solution = 1-(1-np.exp(-10))*x_prime-np.exp(-10*x_prime)
+    anal_name = "%s/data_files/anal_solution_for_%s.dat" % (dir, name)
+    np.savetxt(anal_name, analytical_solution, fmt="%f")
 
 
 def generate_tridiagonal(N):
