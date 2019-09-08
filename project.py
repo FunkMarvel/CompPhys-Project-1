@@ -1,51 +1,101 @@
 # Project 1 FYS3150, Anders P. Åsbø
 import data_generator as gen
 import numpy as np
+import os
 import matplotlib.pyplot as plt
-
-N = int(input("Specify number of data points N: "))
-name = input("Name of data-set without file extension: ")
-
-x = np.linspace(0, 1, N)  # array of normalized positions.
-h = (x[0]-x[-1])/N  # defining step-siz.
-
-gen.generate_data(x, name)  # generating data set.
-anal_sol = np.loadtxt("analytical_solution_for_%s.dat" % name)
-
-u = np.empty(N)  # array for unkown values.
-d = np.full(N, 2)  # array for diagonal elements.
-d_prime = np.empty(N)  # array for diagonal after decom. and sub.
-a = np.full(N-1, -1)  # array for upper, off-center diagonal.
-b = np.full(N-1, -1)  # array for lower, off-center diagonal.
-g = np.loadtxt("%s.dat" % name)*h**2  # array for g in matrix eq. Au=g.
-g_prime = np.empty(N)  # array for g after decomp. and sub.
 
 
 def main():
-    decomp_and_forward_sub()
-    backward_sub()
+    """Program solves matrix equation Au=f, using decomposition, forward
+    substitution and backward substitution, for a tridiagonal, NxN matrix A."""
+    init_data()  # initialising data
+
+    decomp_and_forward_sub()  # performing decomp. and forward sub.
+
+    backward_sub()  # performing backward sub.
+
+    save_sol()  # saving numerical solution in "data_files" directory.
+
+    plot_solutions()  # plotting numerical solution vs analytical solution.
+
+    plt.show()  # displaying plot.
+
+
+def init_data():
+    """Initialising data for program as global variables."""
+    global dir, N, name, x, h, anal_sol, u, d, d_prime, a, b, g, g_prime
+    dir = os.path.dirname(os.path.realpath(__file__))  # current directory.
+
+    # defining number of rows and columns in matrix:
+    N = int(input("Specify number of data points N: "))
+    # defining common label for data files:
+    name = input("Label of data-sets without file extension: ")
+
+    x = np.linspace(0, 1, N)  # array of normalized positions.
+    h = (x[0]-x[-1])/N  # defining step-siz.
+
+    gen.generate_data(x, name)  # generating dataanal_name set.
+    anal_sol = np.loadtxt("%s/data_files/anal_solution_for_%s.dat" %
+                          (dir, name))
+
+    u = np.empty(N)  # array for unkown values.
+    d = np.full(N, 2)  # array for diagonal elements.
+    d_prime = np.empty(N)  # array for diagonal after decom. and sub.
+    a = np.full(N-1, -1)  # array for upper, off-center diagonal.
+    b = np.full(N-1, -1)  # array for lower, off-center diagonal.
+    # array for g in matrix eq. Au=g.
+    f = np.loadtxt("%s/data_files/%s.dat" % (dir, name))
+    g = f*h**2
+    g_prime = np.empty(N)  # array for g after decomp. and sub.
 
 
 def decomp_and_forward_sub():
     """Function that performs the matrix decomposition and forward
     substitution."""
+    # setting border conditions:
     d_prime[0] = d[0]
     g_prime[0] = g[0]
-    for i in range(1, len(u)):
+    for i in range(1, len(u)):  # performing decomp. and forward sub.
         d_prime[i] = d[i] - b[i-1]*a[i-1]/d_prime[i-1]
         g_prime[i] = g[i] - b[i-1]*g_prime[i-1]/d_prime[i-1]
 
 
 def backward_sub():
     """Function that performs the backward substitution."""
-    u[0], u[-1] = 0, 0
-    for i in reversed(range(1, len(u)-1)):
+    u[0], u[-1] = 0, 0  # setting border conditions.
+    for i in reversed(range(1, len(u)-1)):  # performing backward sub.
         u[i] = (g_prime[i]-a[i]*u[i+1])/d_prime[i]
 
 
+def save_sol():
+    """Function for saving numerical solution in data_files directory
+    with prefix "solution"."""
+    path = "%s/data_files/solution_%s.dat" % (dir, name)
+    np.savetxt(path, u, fmt="%f")
+
+
 def plot_solutions():
-    pass
+    """Function for plotting numerical vs analytical solutions."""
+    x_prime = np.linspace(x[0], x[-1], len(anal_sol))
+
+    plt.figure()
+    plt.plot(x, u, label="Numerical solve")
+    plt.plot(x_prime, anal_sol, label="Analytical solve")
+    plt.title("Integrating with a %iX%i tridiagonal matrix" % (N, N))
+    plt.xlabel(r"$x \in [0,1]$")
+    plt.ylabel(r"$u(x)$")
+    plt.legend()
+    plt.grid()
 
 
 if __name__ == '__main__':
     main()
+
+
+# example run:
+"""
+$ python3 project.py
+Specify number of data points N: 1000
+Name of data-set without file extension: num1000x1000
+"""
+# a plot is displayed, and the data is saved to the data_files directory.
