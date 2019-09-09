@@ -60,7 +60,7 @@ def decomp_and_forward_and_backward_sub():
         u[i] = (g_prime[i] + u[i+1])*d_prime[i-1]
 
     end = time.default_timer()
-    np.savetxt("looptime%i" % N, np.array([end-start]))
+    print("looptime%i" % N, np.array([end-start]))
 
 
 def save_sol():
