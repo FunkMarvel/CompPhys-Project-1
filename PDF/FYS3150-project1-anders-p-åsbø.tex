@@ -154,14 +154,13 @@ derp
 \tableofcontents
 
 \section{Introduction}\label{sec:1}
-<<<<<<< HEAD
 Numerical integration is an important cornerstone of computational physics, and as such it is important to understand its limits in terms of numerical precision and time spent computing. In this report I have looked at the specific case of numerically integrating a linear, second order differential equation as a system of linear equations, with the pretext of solving a one-dimensional variant of Poisson's equation.
 
 \section{Formalism}\label{sec:2}
 \subsection{Underlying theory}\label{subsec:21}
 If I have a charge distrobution \(\rho(\vec{r})\), as a function of the position \(\vec{r}\), Possion's equation gives the electrostatic potential \(\Phi\)
 $$
-	\nabla^{2}=-4\pi\rho(\vec{r}).	
+	\nabla^{2}=-4\pi\rho(\vec{r}).
 $$
 If I then assume both \(\rho(\vec{r})\), and \(\Phi\) to bi spherically symetric, the equation can be simplified to
 $$
@@ -290,10 +289,50 @@ Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.
 \section{Analysis}\label{sec:4}
 
 \subsection{Plotting the genneral algorithm}\label{subsec:41}
+\begin{figure}[H]
+	\centering
+	\label{fig:411}
+	\includegraphics[width=\columnwidth]{../figures/NumVsAnal10x10.png}
+	\caption{Plot of numerical, and analytical solution using the general algorithm with
+	\(N=10\).}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\label{fig:412}
+	\includegraphics[width=\columnwidth]{../figures/NumVsAnal100x100.png}
+	\caption{Plot of numerical, and analytical solution using the general algorithm with
+	\(N=100\).}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\label{fig413}
+	\includegraphics[width=\columnwidth]{../figures/NumVsAnal1000x1000.png}
+	\caption{Plot of numerical, and analytical solution using the general algorithm with
+	\(N=1000\).}
+\end{figure}
 
 \subsection{Benchmarks of the general and specializeed algorithms}\label{subsec:42}
 
 \subsection{Error analysis of the specialized algorithm}\label{subsec:43}
+\begin{table}[H]
+	\centering
+	\label{tab:431}
+	\begin{tabular}{l|r}
+	\(\log_{10}h\) & \(\log_{10}\epsilon_{i,max}\) \\
+	\(-1\) & \(1.762047\) \\
+	\(-2\) & \(3.021341\) \\
+	\(-3\) & \(4.043354\) \\
+	\(-4\) & \(5.045319\) \\
+	\(-5\) & \(6.045714\) \\
+	\(-6\) & \(7.045753\) \\
+	\(-7\) & \(inf\) \\
+	\end{tabular}
+	\caption{Table of \(\log_{10}h\), and the corresponding \(\log_{10}\epsilon_{i,max}\),
+	where \(h\) is the step-size used, and \(\epsilon_{i,max}\) is the coresponding
+	maximum of the relative error}
+\end{table}
 
 \subsection{Comparison with LU-decomposition}\label{subsec:43}
 
@@ -303,21 +342,6 @@ Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.
 \section{Program files} \label{A}
 All code for this report was written in Python 3.6, and the complete set of files can be found at \url{https://github.com/FunkMarvel/CompPhys-Project-1}.
 \subsection{project.py}\label{A:1}
-=======
-
-\section{Formalism}\label{sec:2}
-
-\section{Implementation}\label{sec:3}
-
-\section{Analysis}\label{sec:4}
-
-\section{Conclusion}\label{sec:5}
-
-\appendix
-\section{Program files} \label{A:1}
-All code for this report was written in Python 3.6, and the complete set of files can be found at \url{https://github.com/FunkMarvel/CompPhys-Project-1}.
-\subsection{project.py}\label{A:11}
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
 \begin{lstlisting}
 # Project 1 FYS3150, Anders P. Åsbø
 # general tridiagonal matrix.
@@ -379,11 +403,7 @@ def decomp_and_forward_and_backward_sub():
     d_prime[0] = d[0]
     g_prime[0] = g[0]
 
-<<<<<<< HEAD
     start = time.default_timer()  # times algorithm
-=======
-    start = time.default_timer()
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
     for i in range(1, len(u)):  # performing decomp. and forward sub.
         decomp_factor = b[i-1]/d_prime[i-1]
         d_prime[i] = d[i] - a[i-1]*decomp_factor
@@ -427,16 +447,10 @@ Specify number of data points N: 1000
 Label of data-sets without file extension: num1000x1000
 """
 # a plot is displayed, and the data is saved to the data_files directory.
-<<<<<<< HEAD
 
 \end{lstlisting}
 
 \subsection{project\_specialized.py}\label{A:2}
-=======
-\end{lstlisting}
-
-\subsection{project\_specialized.py}\label{A:12}
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
 \begin{lstlisting}
 # Project 1 FYS3150, Anders P. Åsbø
 import data_generator as gen
@@ -456,15 +470,9 @@ def main():
 
     save_sol()  # saving numerical solution in "data_files" directory.
 
-<<<<<<< HEAD
     # plot_solutions()  # plotting numerical solution vs analytical solution.
 
     # plt.show()  # displaying plot.
-=======
-    plot_solutions()  # plotting numerical solution vs analytical solution.
-
-    plt.show()  # displaying plot.
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
 
 
 def init_data():
@@ -506,11 +514,7 @@ def decomp_and_forward_and_backward_sub():
         u[i] = (g_prime[i] + u[i+1])*d_prime[i-1]
 
     end = time.default_timer()
-<<<<<<< HEAD
     np.savetxt("looptime%i" % N, np.array([end-start]))
-=======
-    print("Time spent on loop %e" % (end-start))
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
 
 
 def save_sol():
@@ -540,11 +544,7 @@ if __name__ == '__main__':
 
 # example run:
 """
-<<<<<<< HEAD
-$ python3 project.py
-=======
 $ python3 project_specialized.py
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
 Specify number of data points N: 1000
 Label of data-sets without file extension: opti1000x1000
 """
@@ -552,15 +552,9 @@ Label of data-sets without file extension: opti1000x1000
 
 \end{lstlisting}
 
-<<<<<<< HEAD
 \subsection{data\_generator.py} \label{A:3}
 \begin{lstlisting}
 # create data set for numerical testing, Ander P. Åsbø
-=======
-\subsection{data\_generator.py}
-\begin{lstlisting}
-# create data set for numerical testing
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
 import numpy as np
 import os
 
@@ -568,13 +562,8 @@ dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def main():
-<<<<<<< HEAD
     """Generates a set of test-data, if run individually."""
     test_generate_data()
-=======
-    test_generate_data()
-    test_generate_tridiagonal()
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
 
 
 def generate_data(x, name):
@@ -584,17 +573,12 @@ def generate_data(x, name):
     path = "%s/data_files/%s.dat" % (dir, name)
     np.savetxt(path, data, fmt="%f")
 
-<<<<<<< HEAD
     """
     # interpolated analytical solution used when plotting:
     x_prime = np.linspace(x[0], x[-1], 1000)
     analytical_solution = 1-(1-np.exp(-10))*x_prime-np.exp(-10*x_prime)
     """
     analytical_solution = 1-(1-np.exp(-10))*x-np.exp(-10*x)
-=======
-    x_prime = np.linspace(x[0], x[-1], 1000)
-    analytical_solution = 1-(1-np.exp(-10))*x_prime-np.exp(-10*x_prime)
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
     analytical_solution[0], analytical_solution[-1] = 0, 0
     anal_name = "%s/data_files/anal_solution_for_%s.dat" % (dir, name)
     np.savetxt(anal_name, analytical_solution, fmt="%f")
@@ -617,7 +601,6 @@ def test_generate_data():
     generate_data(x, test_name)
 
 
-<<<<<<< HEAD
 if __name__ == '__main__':
     main()
 
@@ -627,17 +610,57 @@ $ python3 data_generator.py
 """
 # the test-data files are sucessfully generated.
 
-=======
-def test_generate_tridiagonal():
-    """Generates test data for tridiagonal."""
-    generate_tridiagonal(100)
-    print(np.loadtxt("b-d-a_tridiagonal.dat"))
+\end{lstlisting}
+
+\subsection{erroranalysis.py}\label{A:4}
+\begin{lstlisting}
+# Project 1 FYS3150, Anders P. Åsbø.
+import numpy as np
+import os
+import matplotlib as plt
+
+
+def main():
+    """This program calculates the log10 of the relative error for
+    different data sets generated with "project_specialized.py", and saves
+    it in a textfile table with the log10 of the step-size."""
+
+    dir = os.path.dirname(os.path.realpath(__file__))
+    # preping arrays:
+    N = np.array([10, 100, 1000, 10000, 100000, 1000000, 10000000])
+    h = np.empty(len(N))
+    epsilon = np.empty(len(N))
+
+    for i in range(len(N)):  # reading data:
+        u_num = np.loadtxt("%s/data_files/test%i.dat" % (dir, 1+i))
+        u_anal = np.loadtxt("%s/data_files/anal_solution_for_test%i.dat"
+                            % (dir, 1+i))
+
+        h[i] = np.log10(1/len(u_num))  # calculating log 10 of step-size.
+
+        # calculating log10 of relative error:
+        err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
+        epsilon[i] = np.max(np.log10(err))
+
+    # storing the results
+    table = np.empty((len(N), 2))
+    table[:, 0] = h
+    table[:, 1] = epsilon
+    np.savetxt("%s/data_files/error_table.dat" % dir, table, fmt="%f")
 
 
 if __name__ == '__main__':
     main()
 
->>>>>>> 4998f6f102160946fb81fc765439eb4453bf1e45
+# example run:
+"""
+$ python3 erroranlaysis.py
+erroranlaysis.py:17: RuntimeWarning: divide by zero encountered in log10
+  epsilon[i] = np.max(np.log10(err))
+erroranlaysis.py:16: RuntimeWarning: divide by zero encountered in true_divide
+  err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
+"""
+
 \end{lstlisting}
 
 \bibliography{kilder}{}
