@@ -27,7 +27,7 @@ def main():
     LU, a, d = solver.luDecomp(A)
     b = solver.luBackSubst(LU, a, b)
     end = time.default_timer()
-    print("Time spent on LU %g" % (start-end))
+    print("Time spent on LU %g" % (end-start))
 
     plt.figure()
     plt.plot(x, b)
