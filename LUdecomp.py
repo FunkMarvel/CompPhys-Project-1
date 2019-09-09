@@ -31,7 +31,7 @@ def main():
 
     plt.figure()
     plt.plot(x, b)
-    plt.show()
+    # plt.show()
 
 
 def Afunc(A):
