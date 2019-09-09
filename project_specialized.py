@@ -92,6 +92,6 @@ if __name__ == '__main__':
 """
 $ python3 project.py
 Specify number of data points N: 1000
-Name of data-set without file extension: num1000x1000
+Label of data-sets without file extension: num1000x1000
 """
 # a plot is displayed, and the data is saved to the data_files directory.
