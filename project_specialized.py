@@ -16,9 +16,9 @@ def main():
 
     save_sol()  # saving numerical solution in "data_files" directory.
 
-    plot_solutions()  # plotting numerical solution vs analytical solution.
+    # plot_solutions()  # plotting numerical solution vs analytical solution.
 
-    plt.show()  # displaying plot.
+    # plt.show()  # displaying plot.
 
 
 def init_data():
@@ -60,7 +60,7 @@ def decomp_and_forward_and_backward_sub():
         u[i] = (g_prime[i] + u[i+1])*d_prime[i-1]
 
     end = time.default_timer()
-    print("Time spent on loop %e" % (end-start))
+    np.savetxt("looptime%i" % N, np.array([end-start]))
 
 
 def save_sol():
@@ -92,6 +92,6 @@ if __name__ == '__main__':
 """
 $ python3 project.py
 Specify number of data points N: 1000
-Label of data-sets without file extension: num1000x1000
+Label of data-sets without file extension: opti1000x1000
 """
 # a plot is displayed, and the data is saved to the data_files directory.

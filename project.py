@@ -58,7 +58,7 @@ def decomp_and_forward_and_backward_sub():
     d_prime[0] = d[0]
     g_prime[0] = g[0]
 
-    start = time.default_timer()
+    start = time.default_timer()  # times algorithm
     for i in range(1, len(u)):  # performing decomp. and forward sub.
         decomp_factor = b[i-1]/d_prime[i-1]
         d_prime[i] = d[i] - a[i-1]*decomp_factor

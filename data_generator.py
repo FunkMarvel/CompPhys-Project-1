@@ -1,4 +1,4 @@
-# create data set for numerical testing
+# create data set for numerical testing, Ander P. Åsbø
 import numpy as np
 import os
 
@@ -6,8 +6,8 @@ dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def main():
+    """Generates a set of test-data, if run individually."""
     test_generate_data()
-    test_generate_tridiagonal()
 
 
 def generate_data(x, name):
@@ -17,8 +17,12 @@ def generate_data(x, name):
     path = "%s/data_files/%s.dat" % (dir, name)
     np.savetxt(path, data, fmt="%f")
 
+    """
+    # interpolated analytical solution used when plotting:
     x_prime = np.linspace(x[0], x[-1], 1000)
     analytical_solution = 1-(1-np.exp(-10))*x_prime-np.exp(-10*x_prime)
+    """
+    analytical_solution = 1-(1-np.exp(-10))*x-np.exp(-10*x)
     analytical_solution[0], analytical_solution[-1] = 0, 0
     anal_name = "%s/data_files/anal_solution_for_%s.dat" % (dir, name)
     np.savetxt(anal_name, analytical_solution, fmt="%f")
@@ -41,11 +45,11 @@ def test_generate_data():
     generate_data(x, test_name)
 
 
-def test_generate_tridiagonal():
-    """Generates test data for tridiagonal."""
-    generate_tridiagonal(100)
-    print(np.loadtxt("b-d-a_tridiagonal.dat"))
-
-
 if __name__ == '__main__':
     main()
+
+# example run:
+"""
+$ python3 data_generator.py
+"""
+# the test-data files are sucessfully generated.
