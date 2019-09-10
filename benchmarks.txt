@@ -1,0 +1,25 @@
+Seconds elapsed project.py:
+N    Time [s]
+1e1  3.596200e-04
+1e2  6.853430e-04
+1e3  6.667227e-03
+1e4  6.290169e-02
+1e5  6.611870e-01
+
+Seconds elapsed project_specialized.py:
+N    Time [s]
+1e1  4.5119e-05
+1e2  6.6955e-05
+1e3  0.000745246
+1e4  0.00731116
+1e5  0.0711403
+1e6  0.708105
+1e7  6.99896
+
+Seconds elapsed LUdecomp.py:
+N    Time [s]
+1e1  0.000277714
+1e2  0.00173773
+1e3  0.0307732
+1e4  6.14422
+1e5  MemoryError
