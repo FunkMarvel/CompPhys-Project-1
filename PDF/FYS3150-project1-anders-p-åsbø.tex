@@ -141,28 +141,30 @@
 
 
 \begin{document}
-\title{Numerical integration using linear algebra}   % self-explanatory
+\title{Numerical integration using the Thomas algorithm}   % self-explanatory
 \author{Anders P. Åsbø}               % self-explanatory
 \date{\today}
 \noaffiliation                            % ignore this
 
 \begin{abstract}
-derp
+The focus of this paper was the specific case of numerically integrating a linear, second order differential equation as a system of linear equations by deriving, and implementing the Thomas algorithm\citep{Datta2010}, as well as the precision and computational speed of the algorithm.
+
+It proved to be a efficient, and sufficiently precise method for integrating a second order, linear differential equation. The specialized variant of the algorithm proved especially memory efficient. Both the general, and specialized Thomas algorithms are preferable for the specific usecase in this paper, as they used significantly less memory, and time than a general LU-decomposition solver.
 \end{abstract}
 
 \maketitle
 \tableofcontents
 
 \section{Introduction}\label{sec:1}
-Numerical integration is an important cornerstone of computational physics, and as such it is important to understand its limits in terms of numerical precision and time spent computing. In this report I have looked at the specific case of numerically integrating a linear, second order differential equation as a system of linear equations, with the pretext of solving a one-dimensional variant of Poisson's equation.
+Numerical integration is an important cornerstone of computational physics, and as such it is important to understand its limits in terms of numerical precision and time spent computing. In this report I have looked at the specific case of numerically integrating a linear, second order differential equation as a system of linear equations, with the pretext of solving a one-dimensional variant of Poisson's equation. The focus of this paper will be on deriving, and implementing the Thomas algorithm\citep{Datta2010}, as well as the precision and computational speed of the implementation.
 
 \section{Formalism}\label{sec:2}
 \subsection{Underlying theory}\label{subsec:21}
 If I have a charge distrobution \(\rho(\vec{r})\), as a function of the position \(\vec{r}\), Possion's equation gives the electrostatic potential \(\Phi\)
 $$
-	\nabla^{2}=-4\pi\rho(\vec{r}).
+	\nabla^{2}=-4\pi\rho(\vec{r})
 $$
-If I then assume both \(\rho(\vec{r})\), and \(\Phi\) to bi spherically symetric, the equation can be simplified to
+\citep{DepartmentofPhysics2019}. If I then assume both \(\rho(\vec{r})\), and \(\Phi\) to be spherically symetric, the equation can be simplified to
 $$
 	\frac{1}{r^{2}}\frac{d\Phi}{dr}r^{2}\frac{d\Phi}{dr}=-4\pi\rho(r),
 $$
@@ -174,7 +176,7 @@ which, for simplicity, can be written as
 $$
 	-u''(x)=f(x),
 $$
-with \(u = \phi\), \(f=-4\pi\rho\), and \(x = r\).
+with \(u = \phi\), \(f=-4\pi\rho\), and \(x = r\)\citep{DepartmentofPhysics2019}.
 
 Having arrived at a simple formulation of the initial problem, I can now discretize it using the second order differential approximation
 $$
@@ -184,9 +186,9 @@ Since I will be opperating with a discreete set of variables \(x_{i}\in[0,1]\) w
 $$
 	-\frac{u_{i+1}+u_{i-1}-2u_{i}}{h^{2}}=f_{i},
 $$
-where \(u_{i}=u(x_{i})\). The step-size is defined as \(h=\frac{x_{N}-x_{0}}{N}\), and I impose the Dirichlet boundary conditions \(u(0)=u(1)=0\).
+where \(u_{i}=u(x_{i})\). The step-size is defined as \(h=\frac{x_{N}-x_{0}}{N}\), and I impose the Dirichlet boundary conditions \(u(0)=u(1)=0\)\citep{DepartmentofPhysics2019}.
 
-\subsection{A general algorithm for square, tridiagonal matricies}\label{subsec:22}
+\subsection{Deriving an algorithm for square, tridiagonal matricies}\label{subsec:22}
 
 The discretized approximation obtained in \hyperref[subsec:21]{II.B} can be rearranged to
 $$
@@ -236,9 +238,9 @@ $$
 	\vdots & \ddots & \ddots & \ddots & \ddots & \vdots \\
 	\vdots & \ddots & \ddots & \ddots & \ddots & a_{N-1} \\
 	0 & \dots &\dots & \dots & b_{N-1} & d_{N} \\
-	\end{bmatrix},
+	\end{bmatrix}
 $$
-A way to solve the matrix equation is by Gaussian elimination. I start by subtracting row 1 multiplied by \(\frac{b_{1}}{d_{1}}\) from row 2, and continue by subtracting row 2 multiplied by \(\frac{b_{2}}{d_{2}}\) from row 3. This continues all the way down such that a general algorithm can be written as
+\citep{DepartmentofPhysics2019}. A way to solve the matrix equation is by Gaussian elimination. I start by subtracting row 1 multiplied by \(\frac{b_{1}}{d_{1}}\) from row 2, and continue by subtracting row 2 multiplied by \(\frac{b_{2}}{d_{2}}\) from row 3. This continues all the way down such that a general algorithm can be written as
 \begin{equation}
 	d_{i}^{*}=d_{i}-\frac{b_{i-1}a_{i-1}}{d_{i-1}^{*}}, \label{eq:1}
 \end{equation}
@@ -252,9 +254,11 @@ where \(g_{1}^{*} = g_{1}\), such that we get a new vector \(\vec{g}^{*}\) with 
 \end{equation}
 with \(i = N-1,...,2,1\). This algorithm constitutes the backward substitution.
 
+The complete algorithm is known as the Thomas algorithm, and is named after Llewellyn Thomas\citep{Datta2010},.
+
 \section{Implementation}\label{sec:3}
 
-\subsection{Implementing the general algorithm}\label{subsec:31}
+\subsection{Implementing the general Thomas algorithm}\label{subsec:31}
 To execute the numerical integration using \eqref{eq:1}, \eqref{eq:2}, and \eqref{eq:3}, I wrote the program \hyperref[A:1]{"project.py"(A.1)} which takes the number of step points \(N\), as well as a label for the data files, as input from the user, and initializes an array of linearly spaced values of \(x_{i}\in[0,1]\), as well as the step-size. Furthermore, it calls a custom module \hyperref[A:3]{"data\_generator.py"(A.3)}, which generates saves an array of \(f_{i}\) values to a textfile. \hyperref[A:3]{"data\_generator.py"(A.3)} also generates a seperate textfile containing an array of the analytical solution to the differential equation, since I am using the function
 $$
 	u(x) = 1-(1-e^{-10})x-e^{-10x},
@@ -266,34 +270,34 @@ $$
 	u''(x) = -100e^{-10x}=-f(x).
 $$
 
-Both the textfile containing \(f_{i}\), and the analytical solution are read by \hyperref[A:1]{"project.py"(A.1)}, which stores them as arrays. The program also initializes empty arrays for \(\vec{u}\), \(\vec{d}^{*}\), and \(\vec{g}^{*}\). The tridiagonal matrix is initialized as three arrays, one holding \(b_{i}\), one holding \(d_{i}\), and one holding \(a_{i}\). Thus I avoid filling memory with the zero-elements.
+Both the textfile containing \(f_{i}\), and the analytical solution are read by \hyperref[A:1]{"project.py"(A.1)}, which stores them as arrays. The program also initializes empty arrays for \(\vec{u}\), \(\vec{d}^{*}\), and \(\vec{g}^{*}\). The tridiagonal matrix was initialized as three arrays, one holding \(b_{i}\), one holding \(d_{i}\), and one holding \(a_{i}\). Thus I avoid filling memory with the zero-elements.
 
-\hyperref[A:1]{"project.py"(A.1)} continues, by setting the boundary conditions, and looping through \eqref{eq:1}, and \eqref{eq:2} in one loop, and \eqref{eq:3} in a second loop. For the decomposition and forward substitution, the factor \(\frac{b_{i-1}}{d_{i-1}^{*}}\) is calculated before including it in \eqref{eq:1}, and \eqref{eq:2}, reducing the number of FLOPS from \(6(N-1)\) to \(5(N-1)\). Due to the boundary conditions, the backward substitution requires \(3(N-2)\) FLOPS, resulting in a total of \(8N-11\approx 8N\) FLOPS for sufficently large values of \(N\).
+\hyperref[A:1]{"project.py"(A.1)} continues, by setting the boundary conditions, and looping through \eqref{eq:1}, and \eqref{eq:2} in one loop, and \eqref{eq:3} in a second loop. For the decomposition and forward substitution, the factor \(\frac{b_{i-1}}{d_{i-1}^{*}}\) was calculated before including it in \eqref{eq:1}, and \eqref{eq:2}, reducing the number of FLOPs from \(6(N-1)\) to \(5(N-1)\). Due to the boundary conditions, the backward substitution requires \(3(N-2)\) FLOPs, resulting in a total of \(8N-11\approx 8N\) FLOPs for sufficently large values of \(N\).
 
 Finally, \hyperref[A:1]{"project.py"(A.1)} saves the numerial solution \(\vec{u}\) to a textfile, and plots it against the analytical solution.
 
-\subsection{Implementing a specialized version of the algorithm}\label{subsec:32}
-Because the specific tridiagonal matrix in the problem has all diagonal elements equal to \(2\), and all non-zero, off-diagonal elements equal to \(-1\), there is some optimization to be done, thus a specialized version of the integration program can be found in \hyperref[A:2]{"project\_specialized.py"(A.1)}.
+\subsection{Implementing a specialized version of the Thomas algorithm}\label{subsec:32}
+Because the specific tridiagonal matrix in the problem has all diagonal elements equal to \(2\), and all non-zero, off-diagonal elements equal to \(-1\), there was some optimization to be done, thus a specialized version of the integration program can be found in \hyperref[A:2]{"project\_specialized.py"(A.1)}.
 
 Substituting in the known values, \eqref{eq:3} can be reduced to
 $$
 	g_{i}^{*} = g_{i} + \frac{g_{i-1}^{*}}{d_{i}^{*}},
 $$
-reducing the backward substitution to \(2(N-2)\) FLOPS.
+reducing the backward substitution to \(2(N-2)\) FLOPs.
 Furthermore, the adjusted, diagonal elements can be expresed by an explicit formula
 $$
 	\frac{1}{d_{i}^{*}}=\frac{2i}{2(i+1)}.
 $$
-Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.py"(A.1)} precalculates all \(\frac{1}{d_{i}^{*}}\) in parallell, reducing the decomposition and forward substitution to \(2(N-1)\) FLOPS. This effectivly halves the number of FLOPS of the total algorithm to \(4N-6\approx 4N\), the arrays for the initial matrix elements were removed to as they are no longer needed.
+Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.py"(A.1)} precalculates all \(\frac{1}{d_{i}^{*}}\) in parallell, reducing the decomposition and forward substitution to \(2(N-1)\) FLOPs. This effectivly halves the number of FLOPs of the total algorithm to \(4N-6\approx 4N\), the arrays for the initial matrix elements were removed to as they are no longer needed.
 
 \section{Analysis}\label{sec:4}
 
-\subsection{Plotting the genneral algorithm}\label{subsec:41}
+\subsection{Plotting the genneral Thomas algorithm}\label{subsec:41}
 \begin{figure}[H]
 	\centering
 	\label{fig:411}
 	\includegraphics[width=\columnwidth]{../figures/NumVsAnal10x10.png}
-	\caption{Plot of numerical, and analytical solution, using the general algorithm with
+	\caption{Plot of numerical, and analytical solution, using the general Thomas algorithm with
 	\(N=10\).}
 \end{figure}
 
@@ -301,7 +305,7 @@ Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.
 	\centering
 	\label{fig:412}
 	\includegraphics[width=\columnwidth]{../figures/NumVsAnal100x100.png}
-	\caption{Plot of numerical, and analytical solution, using the general algorithm with
+	\caption{Plot of numerical, and analytical solution, using the general Thomas algorithm with
 	\(N=100\).}
 \end{figure}
 
@@ -309,10 +313,10 @@ Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.
 	\centering
 	\label{fig:413}
 	\includegraphics[width=\columnwidth]{../figures/NumVsAnal1000x1000.png}
-	\caption{Plot of numerical, and analytical solution, using the general algorithm with
+	\caption{Plot of numerical, and analytical solution, using the general Thomas algorithm with
 	\(N=1000\).}
 \end{figure}
-Using \hyperref[A:1]{"project.py"(A.1)}, I plotted the numerical and analytical solutions to Possion's equation for a spherically symetrical charge distrobution, using a \(N\times N\) matrix. From comparing \hyperref[fig:411]{figure 1} with \hyperref[fig:412]{figure 2}, and \hyperref[fig:413]{figure 3}, I see that the correspondence with the analytical values decreases as the number of matrix elements increases. It is rather unsuprising that a greater \(N\), and therfore smaller step size \(h\), leads to greater accuracy.
+Using \hyperref[A:1]{"project.py"(A.1)}, I plotted the numerical and analytical solutions to Possion's equation for a spherically symetrical charge distrobution, using a \(N\times N\) matrix. From comparing \hyperref[fig:411]{figure 1} with \hyperref[fig:412]{figure 2}, and \hyperref[fig:413]{figure 3}, I see that the correspondence with the analytical values decreases as the number of matrix elements increases. It was rather unsuprising that a greater \(N\), and therfore smaller step size \(h\), leads to greater accuracy.
 
 
 \subsection{Benchmarks of the general and specializeed algorithms}\label{subsec:42}
@@ -327,7 +331,7 @@ Using \hyperref[A:1]{"project.py"(A.1)}, I plotted the numerical and analytical 
 	\(\SI{1e+04}{}\) & \(\SI{6.290169e-02}{}\) \\
 	\(\SI{1e+05}{}\) & \(\SI{6.611870e-01}{}\) \\
 	\end{tabular}
-	\caption{Table of time elapsed in seconds on algorithm for
+	\caption{Table of time elapsed in seconds on the general Thomas algorithm for
 	\hyperref[A:1]{"project.py"} with corresponding value of \(N\)}
 \end{table}
 
@@ -342,18 +346,18 @@ Using \hyperref[A:1]{"project.py"(A.1)}, I plotted the numerical and analytical 
 	\(\SI{1e+04}{}\) & \(\SI{7.31116e-03}{}\) \\
 	\(\SI{1e+05}{}\) & \(\SI{7.11403e-02}{}\) \\
 	\end{tabular}
-	\caption{Table of time elapsed in seconds on algorithm for
+	\caption{Table of time elapsed in seconds on the specialized Thomas algorithm for
 	\hyperref[A:2]{"project\_specialized.py"} with corresponding value of \(N\)}
 \end{table}
 
-I mesaured the time both \hyperref[A:1]{"project.py"}, and \hyperref[A:2]{"project\_specialized.py"} used to execute the general and specialized versions of the algorithm. This was done by saving the time on the CPU-clock directly before and after executing the two sequential loops that constitute the complete algorithm.
+I mesaured the time both \hyperref[A:1]{"project.py"}, and \hyperref[A:2]{"project\_specialized.py"} used to execute the general and specialized versions of the Thomas algorithm. This was done by saving the time on the CPU-clock directly before and after executing the two sequential loops that constitute the complete algorithm.
 
 \hyperref[tab:421]{Table I} shows the time it took for \hyperref[A:1]{"project.py"}, and \hyperref[tab:422]{table II}
-shows the time it took for \hyperref[A:2]{"project\_specialized.py"}. The two afformentioned tables show a decrease in computation time by approximatly one order of magnitude. This is rather suprising given that the number of FLOPS is only halved. However there might be extra overhead associated with retrieving values from arrays that affects the general algorithm, since it has the elements of the original matrix stored in three arrays, while the specialized algorithm does not, since any factor containing said elements are precalculated.
+shows the time it took for \hyperref[A:2]{"project\_specialized.py"}. The two afformentioned tables show a decrease in computation time by approximatly one order of magnitude. This was rather suprising given that the number of FLOPs was only halved. However there might be extra overhead associated with retrieving values from arrays that affects the general Thomas algorithm, since it has the elements of the original matrix stored in three arrays, while the specialized Thomas algorithm does not, since any factor containing said elements are precalculated.
 
-There are other possible factors at play, such as seperate processes taking up CPU cycles. Both programs where benchmarked with as few as possible background processes. It is also a posibility that variations in CPU clockspeed might influence the results. A better method of benchmarking would simply have been to take the averages of multiple runs per \(N\)-value.
+There are other possible factors at play, such as seperate processes taking up CPU cycles. Both programs where benchmarked with as few as possible background processes. It was also a posibility that variations in CPU clockspeed might influence the results. A better method of benchmarking would simply have been to take the averages of multiple runs per \(N\)-value.
  
-\subsection{Error analysis of the specialized algorithm}\label{subsec:43}
+\subsection{Error analysis of the specialized Thomas algorithm}\label{subsec:43}
 \begin{table}[H]
 	\centering
 	\label{tab:431}
@@ -372,9 +376,11 @@ There are other possible factors at play, such as seperate processes taking up C
 	maximum of the relative error}
 \end{table}
 
-To evaluate the accuracy of the specialized algorithm, I ran \hyperref[A:2]{"project\_specialized.py"} for values of \(N=10^{i}\) where \(i=1,2,...,7\). To compare the numerical and analytical values, I used \hyperref[A:4]{"erroranalysis.py"(A.4)} which reads each data set, and stores a \(7\times 2\)-matrix in a textfile containing the \(\log_{10}\) of the maximum relativ error for each value of \(N\), and the \(log_{10}\) of the coresponding step size. The resulting values in \hyperref[tab:431]{table III} shows that the maximum relativ error of the numerical solution decreases by slightly less than one order of magnitude when the step size is decreased by one order of magnitude.
+To evaluate the accuracy of the specialized Thomas algorithm, I ran \hyperref[A:2]{"project\_specialized.py"} for values of \(N=10^{i}\) where \(i=1,2,...,7\). To compare the numerical and analytical values, I used \hyperref[A:4]{"erroranalysis.py"(A.4)} which reads each data set, and stores a \(7\times 2\)-matrix in a textfile containing the \(\log_{10}\) of the maximum relativ error for each value of \(N\), and the \(log_{10}\) of the coresponding step size. The resulting values in \hyperref[tab:431]{table III} shows that the maximum relativ error of the numerical solution decreases by approximatly one order of magnitude when the step size was decreased by one order of magnitude.
 
-\subsection{Comparison with LU-decomposition}\label{subsec:43}
+\hyperref[A:4]{"erroranalysis.py"} did output "RuntimeWarning: divide by zero encountered in log10". It was found to happen for \(N=\SI{10e+05}{•}\), and by saving and opening the corresponding array of relativ errors, I found that some of the values were \(0\). This does not appear to have affected the resulting maximum error.
+
+\subsection{Comparison with LU-decomposition}\label{subsec:44}
 \begin{table}[H]
 	\centering
 	\label{tab:441}
@@ -389,345 +395,36 @@ To evaluate the accuracy of the specialized algorithm, I ran \hyperref[A:2]{"pro
 	\caption{Table of time elapsed in seconds on LU decomposition and solve for
 	\hyperref[A:2]{"LUdecomp.py"} with corresponding value of \(N\)}
 \end{table}
+For comparison, I used the LU-decompositon included in the SciPy library. Thdivide by zero in numpy log10e program \hyperref[A:5]{"LUdecomp.py"} which times both the LU factorisation, and solving the resulting system of equations. By comparing  \hyperref[tab:441]{table IV} with \hyperref[tab:421]{table I} and \hyperref[tab:422]{table II}, it becomes apparent that the LU-decompositon was significantly slower.
 
+There was some overhead in the function calls, that \hyperref[A:1]{"project.py"} and \hyperref[A:2]{"project\_specialized.py"} does not have, as they are timed inside their respective functions. However, the more probable reason for the slow down was the increase in FLOPs from \(8N\) and \(4N\) for the general and specialized Thomas-algorithm, to
+\(\frac{2}{3}N^{3}\) FLOPs for the LU-decomposition\citep{Hjorth-Jensen2018}, since the LU-decomposition was dealing with all \(N\times N\) elements of the input matrix.
+
+The final entry on \hyperref[tab:441]{table IV} is listed as "not a number" due to \hyperref[A:5]{"LUdecomp.py"} running out of memory and crashing, when atempting to allocate space for all matrix elements when \(N = \SI{1e+05}{}\). This was not suprising, as an \(10^{5}\times 10^{5}\)-matrix where each element is a \(64\)bit floatingpoint number would require \(80\)GB of random access memory. The system I used only had \(16\)GB. By comparison, \hyperref[A:1]{"project.py"} uses only \(2.4\)MB to represent the same matrix, allowing for much greater values of \(N\), and \hyperref[A:2]{"project\_specialized.py"} uses a mere \(800\)kB representing the precalculated \(1/d_{i}^{*}\) factors.
 
 \section{Conclusion}\label{sec:5}
+The Thomas algorithm proved to be a efficient, and sufficiently precise method for integrating a second order, linear differential equation. The specialized variant of the algorithm proved especially memory efficient, as discussed in \hyperref[subsec:44]{IV.B}.
+Both the general, and specialized Thomas algorithms are preferable for the specific usecase in this paper, as they used significantly less memory, and time than a general LU-decomposition solver.
+
 
 \newpage
-\onecolumngrid
 \appendix
 \section{Program files} \label{A}
 All code for this report was written in Python 3.6, and the complete set of files can be found at \url{https://github.com/FunkMarvel/CompPhys-Project-1}.
 \subsection{project.py}\label{A:1}
-\begin{lstlisting}
-# Project 1 FYS3150, Anders P. Åsbø
-# general tridiagonal matrix.
-import data_generator as gen
-import numpy as np
-import os
-import matplotlib.pyplot as plt
-import timeit as time
-
-
-def main():
-    """Program solves matrix equation Au=f, using decomposition, forward
-    substitution and backward substitution, for a tridiagonal, NxN matrix A."""
-    init_data()  # initialising data
-
-    # performing decomp. and forward and backward sub.:
-    decomp_and_forward_and_backward_sub()
-
-    save_sol()  # saving numerical solution in "data_files" directory.
-
-    plot_solutions()  # plotting numerical solution vs analytical solution.
-
-    plt.show()  # displaying plot.
-
-
-def init_data():
-    """Initialising data for program as global variables."""
-    global dir, N, name, x, h, anal_sol, u, d, d_prime, a, b, g, g_prime
-    dir = os.path.dirname(os.path.realpath(__file__))  # current directory.
-
-    # defining number of rows and columns in matrix:
-    N = int(eval(input("Specify number of data points N: ")))
-    # defining common label for data files:
-    name = input("Label of data-sets without file extension: ")
-
-    x = np.linspace(0, 1, N)  # array of normalized positions.
-    h = (x[0]-x[-1])/N  # defining step-siz.
-
-    gen.generate_data(x, name)  # generating dataanal_name set.
-    anal_sol = np.loadtxt("%s/data_files/anal_solution_for_%s.dat" %
-                          (dir, name))
-
-    u = np.empty(N)  # array for unkown values.
-    d = np.full(N, 2)  # array for diagonal elements.
-    d_prime = np.empty(N)  # array for diagonal after decom. and sub.
-    a = np.full(N-1, -1)  # array for upper, off-center diagonal.
-    b = np.full(N-1, -1)  # array for lower, off-center diagonal.
-    # array for g in matrix eq. Au=g.
-    f = np.loadtxt("%s/data_files/%s.dat" % (dir, name))
-    g = f*h**2
-    g_prime = np.empty(N)  # array for g after decomp. and sub.
-
-
-def decomp_and_forward_and_backward_sub():
-    """Function that performs the matrix decomposition and forward
-    and backward substitution."""
-    # setting boundary conditions:
-    u[0], u[-1] = 0, 0
-    d_prime[0] = d[0]
-    g_prime[0] = g[0]
-
-    start = time.default_timer()  # times algorithm
-    for i in range(1, len(u)):  # performing decomp. and forward sub.
-        decomp_factor = b[i-1]/d_prime[i-1]
-        d_prime[i] = d[i] - a[i-1]*decomp_factor
-        g_prime[i] = g[i] - g_prime[i-1]*decomp_factor
-
-    for i in reversed(range(1, len(u)-1)):  # performing backward sub.
-        u[i] = (g_prime[i]-a[i]*u[i+1])/d_prime[i]
-    end = time.default_timer()
-    print("Time spent on loop %e" % (end-start))
-
-
-def save_sol():
-    """Function for saving numerical solution in data_files directory
-    with prefix "solution"."""
-    path = "%s/data_files/solution_%s.dat" % (dir, name)
-    np.savetxt(path, u, fmt="%f")
-
-
-def plot_solutions():
-    """Function for plotting numerical vs analytical solutions."""
-    x_prime = np.linspace(x[0], x[-1], len(anal_sol))
-
-    plt.figure()
-    plt.plot(x, u, label="Numerical solve")
-    plt.plot(x_prime, anal_sol, label="Analytical solve")
-    plt.title("Integrating with a %iX%i tridiagonal matrix" % (N, N))
-    plt.xlabel(r"$x \in [0,1]$")
-    plt.ylabel(r"$u(x)$")
-    plt.legend()
-    plt.grid()
-
-
-if __name__ == '__main__':
-    main()
-
-
-# example run:
-"""
-$ python3 project.py
-Specify number of data points N: 1000
-Label of data-sets without file extension: num1000x1000
-"""
-# a plot is displayed, and the data is saved to the data_files directory.
-
-\end{lstlisting}
+\url{https://github.com/FunkMarvel/CompPhys-Project-1/blob/master/project.py}
 
 \subsection{project\_specialized.py}\label{A:2}
-\begin{lstlisting}
-# Project 1 FYS3150, Anders P. Åsbø
-import data_generator as gen
-import numpy as np
-import os
-import matplotlib.pyplot as plt
-import timeit as time
-
-
-def main():
-    """Program solves matrix equation Au=f, using decomposition, forward
-    substitution and backward substitution, for a Toeplitz, NxN matrix A."""
-    init_data()  # initialising data
-
-    # performing decomp. and forward and backward sub.:
-    decomp_and_forward_and_backward_sub()
-
-    save_sol()  # saving numerical solution in "data_files" directory.
-
-    # plot_solutions()  # plotting numerical solution vs analytical solution.
-
-    # plt.show()  # displaying plot.
-
-
-def init_data():
-    """Initialising data for program as global variables."""
-    global dir, N, name, x, h, anal_sol, u, d, d_prime, a, b, g, g_prime
-    dir = os.path.dirname(os.path.realpath(__file__))  # current directory.
-
-    # defining number of rows and columns in matrix:
-    N = int(eval(input("Specify number of data points N: ")))
-    # defining common label for data files:
-    name = input("Label of data-sets without file extension: ")
-
-    x = np.linspace(0, 1, N)  # array of normalized positions.
-    h = (x[0]-x[-1])/N  # defining step-siz.
-
-    gen.generate_data(x, name)  # generating dataanal_name set.
-    anal_sol = np.loadtxt("%s/data_files/anal_solution_for_%s.dat" %
-                          (dir, name))
-
-    u = np.empty(N)  # array for unkown values.
-    s = np.arange(1, N+1)
-    d_prime = 2*(s)/(2*(s+1))  # pre-calculating the 1/d_prime factors.
-    f = np.loadtxt("%s/data_files/%s.dat" % (dir, name))
-    g = f*h**2
-    g_prime = np.empty(N)  # array for g after decomp. and sub.
-
-
-def decomp_and_forward_and_backward_sub():
-    """Function that performs the matrix decomposition and forward
-    and backward substitution."""
-    # setting boundary conditions:
-    u[0], u[-1] = 0, 0
-    g_prime[0] = g[0]
-    start = time.default_timer()
-    for i in range(1, len(u)):  # performing decomp. and forward sub.
-        g_prime[i] = g[i] + g_prime[i-1]*d_prime[i-1]
-
-    for i in reversed(range(1, len(u)-1)):  # performing backward sub.
-        u[i] = (g_prime[i] + u[i+1])*d_prime[i-1]
-
-    end = time.default_timer()
-    np.savetxt("looptime%i" % N, np.array([end-start]))
-
-
-def save_sol():
-    """Function for saving numerical solution in data_files directory
-    with prefix "solution"."""
-    path = "%s/data_files/solution_%s.dat" % (dir, name)
-    np.savetxt(path, u, fmt="%f")
-
-
-def plot_solutions():
-    """Function for plotting numerical vs analytical solutions."""
-    x_prime = np.linspace(x[0], x[-1], len(anal_sol))
-
-    plt.figure()
-    plt.plot(x, u, label="Numerical solve")
-    plt.plot(x_prime, anal_sol, label="Analytical solve")
-    plt.title("Integrating with a %iX%i tridiagonal matrix" % (N, N))
-    plt.xlabel(r"$x \in [0,1]$")
-    plt.ylabel(r"$u(x)$")
-    plt.legend()
-    plt.grid()
-
-
-if __name__ == '__main__':
-    main()
-
-
-# example run:
-"""
-$ python3 project_specialized.py
-Specify number of data points N: 1000
-Label of data-sets without file extension: opti1000x1000
-"""
-# a plot is displayed, and the data is saved to the data_files directory.
-
-\end{lstlisting}
+\url{https://github.com/FunkMarvel/CompPhys-Project-1/blob/master/project_specialized.py}
 
 \subsection{data\_generator.py} \label{A:3}
-\begin{lstlisting}
-# Project 1 FYS3150, Anders P. Åsbø.
-import numpy as np
-import os
+\url{https://github.com/FunkMarvel/CompPhys-Project-1/blob/master/data_generator.py}
 
-
-def main():
-    """This program calculates the log10 of the relative error for
-    different data sets generated with "project_specialized.py", and saves
-    it in a textfile table with the log10 of the step-size."""
-
-    dir = os.path.dirname(os.path.realpath(__file__))
-    name = input("Label data: ")
-    # preping arrays:
-    N = np.array([10, 100, 1000, 10000, 100000, 1000000, 10000000])
-    h = np.empty(len(N))
-    epsilon = np.empty(len(N))
-
-    for i in range(len(N)):  # reading data from files:
-        u_num = np.loadtxt("%s/data_files/%s%i.dat" % (dir, name, 1+i))
-        u_anal = np.loadtxt("%s/data_files/anal_solution_for_%s%i.dat"
-                            % (dir, name, 1+i))
-
-        h[i] = np.log10(1/len(u_num))  # calculating log 10 of step-size.
-
-        # calculating log10 of relative error:
-        err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
-        epsilon[i] = np.max(np.log10(err))
-
-    # storing the results
-    table = np.empty((len(N), 2))
-    table[:, 0] = h
-    table[:, 1] = epsilon
-    np.savetxt("%s/data_files/error_table_%s.dat" % (dir, name), table,
-               fmt="%f")
-
-
-if __name__ == '__main__':
-    main()
-
-# example run:
-"""
-$ python3 erroranlaysis.py
-erroranlaysis.py:17: RuntimeWarning: divide by zero encountered in log10
-  epsilon[i] = np.max(np.log10(err))
-erroranlaysis.py:16: RuntimeWarning: divide by zero encountered in true_divide
-  err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
-"""
-# table of log10 of stepsizes, and max errors is saved to file
-
-\end{lstlisting}
+\subsection{erroranalysis.py} \label{A:4}
+\url{https://github.com/FunkMarvel/CompPhys-Project-1/blob/master/erroranlaysis.py}
 
 \subsection{LUdecomp.py}\label{A:5}
-\begin{lstlisting}
-# Project 1 FYS3150, Anders P. Åsbø
-import scipy.linalg as sp
-import data_generator as gen
-import numpy as np
-import timeit as time
-import os
-
-dir = os.path.dirname(os.path.realpath(__file__))
-
-
-def main():
-    """Program uses LU-decomposition to solve Au=g"""
-
-    # getting dimensions of matrix, and labeling data:
-    global N
-    N = int(eval(input("Give value for N: ")))
-    name = "LUtest%i" % N
-
-    # generating data:
-    x = np.linspace(0, 1, N)
-    h = (x[-1]-x[0])/N
-    gen.generate_data(x, name)
-    g = np.loadtxt("%s/data_files/%s.dat" % (dir, name))*h**2
-
-    A = np.zeros((N, N))  # creating zero matrix.
-    A = Afunc(A)  # populating the three diagonals.
-
-    start = time.default_timer()  # timing solve.
-    LU, piv = sp.lu_factor(A)  # decomp and forward sub.
-    u = sp.lu_solve((LU, piv), g)  # backward sub.
-    end = time.default_timer()
-    print("Time spent on LU %g" % (end-start))  # printing elapsed time.
-
-    # saving numerical solution:
-    np.savetxt("%s/data_files%s.dat" % (dir, name), u, fmt="%f")
-
-
-def Afunc(A):
-    """Function that populates tridiagonal matrix with 2 along diagonal,
-    and -1 as the non-zero, off-diagonal elements."""
-    for i in range(N):
-        for j in range(N):
-            if i == j:
-                A[i, j] = 2
-            elif i == j+1:
-                A[i, j] = -1
-            elif j == i+1:
-                A[i, j] = -1
-
-    return A
-
-
-if __name__ == '__main__':
-    main()
-
-# example run:
-"""
-$ python3 LUdecomp.py
-Give value for N: 1e4
-Time spent on LU 6.23319
-"""
-# data is saved to files.
-
-\end{lstlisting}
+\url{https://github.com/FunkMarvel/CompPhys-Project-1/blob/master/LUdecomp.py}
 
 \bibliography{kilder}{}
 
