@@ -26,7 +26,7 @@ def main():
         err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
         epsilon[i] = np.max(np.log10(err))
 
-    # storing the results
+    # saving the results
     table = np.empty((len(N), 2))
     table[:, 0] = h
     table[:, 1] = epsilon
