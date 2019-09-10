@@ -29,16 +29,6 @@ def generate_data(x, name):
     np.savetxt(anal_name, analytical_solution, fmt="%g")
 
 
-def generate_tridiagonal(N):
-    """Function that generates a Nx3 array with each column corresponding to
-    the non-zero elements in a tridiagonal matrix.
-    "b" (mat_data[:,0]) is the lower diagonal,
-    "d" (mat_data[:,1]) is the diagonal,
-    and "a" (mat_data[:,2]) is the upper diagonal."""
-    mat_data = np.random.randint(1, 100, size=(N, 3))
-    np.savetxt("b-d-a_tridiagonal.dat", mat_data, fmt="%g")
-
-
 def test_generate_data():
     """Generates test data if run as stand-alone program."""
     x = np.linspace(0, 1, 1001)
