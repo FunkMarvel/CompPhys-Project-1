@@ -156,7 +156,9 @@ It proved to be a efficient, and sufficiently precise method for integrating a s
 \tableofcontents
 
 \section{Introduction}\label{sec:1}
-Numerical integration is an important cornerstone of computational physics, and as such it is important to understand its limits in terms of numerical precision and time spent computing. In this report I have looked at the specific case of numerically integrating a linear, second order differential equation as a system of linear equations, with the pretext of solving a one-dimensional variant of Poisson's equation. The focus of this paper will be on deriving, and implementing the Thomas algorithm\citep{Datta2010}, as well as the precision and computational speed of the implementation.
+Numerical integration is an important cornerstone of computational physics, and as such it is important to understand its limits in terms of numerical precision and time spent computing. In this report I have looked at the specific case of numerically integrating a linear, second order differential equation as a system of linear equations, with the pretext of solving a one-dimensional variant of Poisson's equation. The focus of this paper will be on deriving, and implementing the Thomas algorithm\citep{Datta2010}, as well as the precision and computational speed of the algorithm.
+
+All code for this report was written in Python 3.6, and the complete set of program files can be found at \url{https://github.com/FunkMarvel/CompPhys-Project-1}.
 
 \section{Formalism}\label{sec:2}
 \subsection{Underlying theory}\label{subsec:21}
@@ -406,11 +408,12 @@ The final entry on \hyperref[tab:441]{table IV} is listed as "not a number" due 
 The Thomas algorithm proved to be a efficient, and sufficiently precise method for integrating a second order, linear differential equation. The specialized variant of the algorithm proved especially memory efficient, as discussed in \hyperref[subsec:44]{IV.B}.
 Both the general, and specialized Thomas algorithms are preferable for the specific usecase in this paper, as they used significantly less memory, and time than a general LU-decomposition solver.
 
-
+\bibliography{kilder}{}
 \newpage
 \appendix
 \section{Program files} \label{A}
-All code for this report was written in Python 3.6, and the complete set of files can be found at \url{https://github.com/FunkMarvel/CompPhys-Project-1}.
+All code for this report was written in Python 3.6, and the complete set of program files can be found at \url{https://github.com/FunkMarvel/CompPhys-Project-1}.
+
 \subsection{project.py}\label{A:1}
 \url{https://github.com/FunkMarvel/CompPhys-Project-1/blob/master/project.py}
 
@@ -425,8 +428,6 @@ All code for this report was written in Python 3.6, and the complete set of file
 
 \subsection{LUdecomp.py}\label{A:5}
 \url{https://github.com/FunkMarvel/CompPhys-Project-1/blob/master/LUdecomp.py}
-
-\bibliography{kilder}{}
 
 
 \end{document}
