@@ -11,7 +11,7 @@ def main():
     dir = os.path.dirname(os.path.realpath(__file__))
     name = input("Label data: ")
     # preping arrays:
-    N = np.array([10, 100, 1000, 10000])  # , 100000, 1000000, 10000000])
+    N = np.array([10, 100, 1000, 10000, 100000, 1000000, 10000000])
     h = np.empty(len(N))
     epsilon = np.empty(len(N))
 
@@ -25,6 +25,14 @@ def main():
         # calculating log10 of relative error:
         err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
         epsilon[i] = np.max(np.log10(err))
+
+        """
+        # used to extract the array that gave
+        # RuntimeWarning: divide by zero encountered in log10
+        if i == 5:
+            np.savetxt("dad.dat", err, fmt="%e")
+            break
+        """
 
     # saving the results
     table = np.empty((len(N), 2))
