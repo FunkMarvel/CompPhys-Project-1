@@ -14,7 +14,7 @@ def main():
     # getting dimensions of matrix, and labeling data:
     global N
     N = int(eval(input("Give value for N: ")))
-    name = "LUtest%i" % N
+    name = "LUtest%i" % int(np.log10(N))
 
     # generating data:
     x = np.linspace(0, 1, N)

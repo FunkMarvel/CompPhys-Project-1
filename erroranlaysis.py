@@ -1,7 +1,6 @@
 # Project 1 FYS3150, Anders P. Åsbø.
 import numpy as np
 import os
-import matplotlib as plt
 
 
 def main():
@@ -46,3 +45,4 @@ erroranlaysis.py:17: RuntimeWarning: divide by zero encountered in log10
 erroranlaysis.py:16: RuntimeWarning: divide by zero encountered in true_divide
   err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
 """
+# table of log10 of stepsizes, and max errors is saved to file
