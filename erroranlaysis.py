@@ -40,9 +40,8 @@ if __name__ == '__main__':
 # example run:
 """
 $ python3 erroranlaysis.py
-erroranlaysis.py:17: RuntimeWarning: divide by zero encountered in log10
+Label data: test
+erroranlaysis.py:27: RuntimeWarning: divide by zero encountered in log10
   epsilon[i] = np.max(np.log10(err))
-erroranlaysis.py:16: RuntimeWarning: divide by zero encountered in true_divide
-  err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
 """
 # table of log10 of stepsizes, and max errors is saved to file

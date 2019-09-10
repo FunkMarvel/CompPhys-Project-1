@@ -1,4 +1,4 @@
-\documentclass[english,notitlepage]{revtex4-1}  % defines the basic parameters of the document
+\documentclass[english,notitlepage,reprint]{revtex4-1}  % defines the basic parameters of the document
 
 % if you want a single-column, remove reprint
 
@@ -293,7 +293,7 @@ Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.
 	\centering
 	\label{fig:411}
 	\includegraphics[width=\columnwidth]{../figures/NumVsAnal10x10.png}
-	\caption{Plot of numerical, and analytical solution using the general algorithm with
+	\caption{Plot of numerical, and analytical solution, using the general algorithm with
 	\(N=10\).}
 \end{figure}
 
@@ -301,17 +301,19 @@ Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.
 	\centering
 	\label{fig:412}
 	\includegraphics[width=\columnwidth]{../figures/NumVsAnal100x100.png}
-	\caption{Plot of numerical, and analytical solution using the general algorithm with
+	\caption{Plot of numerical, and analytical solution, using the general algorithm with
 	\(N=100\).}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\label{fig413}
+	\label{fig:413}
 	\includegraphics[width=\columnwidth]{../figures/NumVsAnal1000x1000.png}
-	\caption{Plot of numerical, and analytical solution using the general algorithm with
+	\caption{Plot of numerical, and analytical solution, using the general algorithm with
 	\(N=1000\).}
 \end{figure}
+Using \hyperref[A:1]{"project.py"(A.1)}, I plotted the numerical and analytical solutions to Possion's equation for a spherically symetrical charge distrobution, using a \(N\times N\) matrix. From comparing \hyperref[fig:411]{figure 1} with \hyperref[fig:412]{figure 2}, and \hyperref[fig:413]{figure 3}, I see that the correspondence with the analytical values decreases as the number of matrix elements increases. It is rather unsuprising that a greater \(N\), and therfore smaller step size \(h\), leads to greater accuracy.
+
 
 \subsection{Benchmarks of the general and specializeed algorithms}\label{subsec:42}
 \begin{table}[H]
@@ -322,12 +324,35 @@ Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.
 	\(\SI{1e+01}{}\) & \(\SI{3.596200e-04}{}\) \\
 	\(\SI{1e+02}{}\) & \(\SI{6.853430e-04}{}\) \\
 	\(\SI{1e+03}{}\) & \(\SI{6.667227e-03}{}\) \\
+	\(\SI{1e+04}{}\) & \(\SI{6.290169e-02}{}\) \\
+	\(\SI{1e+05}{}\) & \(\SI{6.611870e-01}{}\) \\
 	\end{tabular}
-	\caption{Table of \(\log_{10}h\), and the corresponding \(\log_{10}\epsilon_{i,max}\),
-	where \(h\) is the step-size used, and \(\epsilon_{i,max}\) is the coresponding
-	maximum of the relative error}
+	\caption{Table of time elapsed in seconds on algorithm for
+	\hyperref[A:1]{"project.py"} with corresponding value of \(N\)}
 \end{table}
 
+\begin{table}[H]
+	\centering
+	\label{tab:422}
+	\begin{tabular}{l|r}
+	\(N\) & Time \([\si{\second}]\) \\
+	\(\SI{1e+01}{}\) & \(\SI{4.5119e-05}{}\) \\
+	\(\SI{1e+02}{}\) & \(\SI{6.6955e-05}{}\) \\
+	\(\SI{1e+03}{}\) & \(\SI{7.45246e-04}{}\) \\
+	\(\SI{1e+04}{}\) & \(\SI{7.31116e-03}{}\) \\
+	\(\SI{1e+05}{}\) & \(\SI{7.11403e-02}{}\) \\
+	\end{tabular}
+	\caption{Table of time elapsed in seconds on algorithm for
+	\hyperref[A:2]{"project\_specialized.py"} with corresponding value of \(N\)}
+\end{table}
+
+I mesaured the time both \hyperref[A:1]{"project.py"}, and \hyperref[A:2]{"project\_specialized.py"} used to execute the general and specialized versions of the algorithm. This was done by saving the time on the CPU-clock directly before and after executing the two sequential loops that constitute the complete algorithm.
+
+\hyperref[tab:421]{Table I} shows the time it took for \hyperref[A:1]{"project.py"}, and \hyperref[tab:422]{table II}
+shows the time it took for \hyperref[A:2]{"project\_specialized.py"}. The two afformentioned tables show a decrease in computation time by approximatly one order of magnitude. This is rather suprising given that the number of FLOPS is only halved. However there might be extra overhead associated with retrieving values from arrays that affects the general algorithm, since it has the elements of the original matrix stored in three arrays, while the specialized algorithm does not, since any factor containing said elements are precalculated.
+
+There are other possible factors at play, such as seperate processes taking up CPU cycles. Both programs where benchmarked with as few as possible background processes. It is also a posibility that variations in CPU clockspeed might influence the results. A better method of benchmarking would simply have been to take the averages of multiple runs per \(N\)-value.
+ 
 \subsection{Error analysis of the specialized algorithm}\label{subsec:43}
 \begin{table}[H]
 	\centering
@@ -347,10 +372,29 @@ Utilizing NumPy's elementwise opperations, \hyperref[A:2]{"project\_specialized.
 	maximum of the relative error}
 \end{table}
 
+To evaluate the accuracy of the specialized algorithm, I ran \hyperref[A:2]{"project\_specialized.py"} for values of \(N=10^{i}\) where \(i=1,2,...,7\). To compare the numerical and analytical values, I used \hyperref[A:4]{"erroranalysis.py"(A.4)} which reads each data set, and stores a \(7\times 2\)-matrix in a textfile containing the \(\log_{10}\) of the maximum relativ error for each value of \(N\), and the \(log_{10}\) of the coresponding step size. The resulting values in \hyperref[tab:431]{table III} shows that the maximum relativ error of the numerical solution decreases by slightly less than one order of magnitude when the step size is decreased by one order of magnitude.
+
 \subsection{Comparison with LU-decomposition}\label{subsec:43}
+\begin{table}[H]
+	\centering
+	\label{tab:441}
+	\begin{tabular}{l|r}
+	\(N\) & Time \([\si{\second}]\) \\
+	\(\SI{1e+01}{}\) & \(\SI{2.77714e-04}{}\) \\
+	\(\SI{1e+02}{}\) & \(\SI{1.73773e-03}{}\) \\
+	\(\SI{1e+03}{}\) & \(\SI{3.07732e-02}{}\) \\
+	\(\SI{1e+04}{}\) & \(\SI{6.14422e0}{}\) \\
+	\(\SI{1e+05}{}\) & NaN \\
+	\end{tabular}
+	\caption{Table of time elapsed in seconds on LU decomposition and solve for
+	\hyperref[A:2]{"LUdecomp.py"} with corresponding value of \(N\)}
+\end{table}
+
 
 \section{Conclusion}\label{sec:5}
 
+\newpage
+\onecolumngrid
 \appendix
 \section{Program files} \label{A}
 All code for this report was written in Python 3.6, and the complete set of files can be found at \url{https://github.com/FunkMarvel/CompPhys-Project-1}.
