@@ -32,7 +32,7 @@ def main():
     print("Time spent on LU %g" % (end-start))  # printing elapsed time.
 
     # saving numerical solution:
-    np.savetxt("%s/data_files%s.dat" % (dir, name), u, fmt="%f")
+    np.savetxt("%s/data_files/solution_%s.dat" % (dir, name), u, fmt="%g")
 
 
 def Afunc(A):

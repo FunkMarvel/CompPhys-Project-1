@@ -74,7 +74,7 @@ def save_sol():
     """Function for saving numerical solution in data_files directory
     with prefix "solution"."""
     path = "%s/data_files/solution_%s.dat" % (dir, name)
-    np.savetxt(path, u, fmt="%f")
+    np.savetxt(path, u, fmt="%g")
 
 
 def plot_solutions():

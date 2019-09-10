@@ -15,7 +15,7 @@ def generate_data(x, name):
     corresponding, analytical u(x). The data is saved to text"""
     data = 100*np.exp(-10*x)
     path = "%s/data_files/%s.dat" % (dir, name)
-    np.savetxt(path, data, fmt="%f")
+    np.savetxt(path, data, fmt="%g")
 
     """
     # interpolated analytical solution used when plotting:
@@ -25,7 +25,7 @@ def generate_data(x, name):
     analytical_solution = 1-(1-np.exp(-10))*x-np.exp(-10*x)
     analytical_solution[0], analytical_solution[-1] = 0, 0
     anal_name = "%s/data_files/anal_solution_for_%s.dat" % (dir, name)
-    np.savetxt(anal_name, analytical_solution, fmt="%f")
+    np.savetxt(anal_name, analytical_solution, fmt="%g")
 
 
 def generate_tridiagonal(N):
@@ -35,7 +35,7 @@ def generate_tridiagonal(N):
     "d" (mat_data[:,1]) is the diagonal,
     and "a" (mat_data[:,2]) is the upper diagonal."""
     mat_data = np.random.randint(1, 100, size=(N, 3))
-    np.savetxt("b-d-a_tridiagonal.dat", mat_data, fmt="%f")
+    np.savetxt("b-d-a_tridiagonal.dat", mat_data, fmt="%g")
 
 
 def test_generate_data():

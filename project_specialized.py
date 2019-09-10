@@ -16,9 +16,9 @@ def main():
 
     save_sol()  # saving numerical solution in "data_files" directory.
 
-    # plot_solutions()  # plotting numerical solution vs analytical solution.
+    plot_solutions()  # plotting numerical solution vs analytical solution.
 
-    # plt.show()  # displaying plot.
+    plt.show()  # displaying plot.
 
 
 def init_data():
@@ -67,7 +67,7 @@ def save_sol():
     """Function for saving numerical solution in data_files directory
     with prefix "solution"."""
     path = "%s/data_files/solution_%s.dat" % (dir, name)
-    np.savetxt(path, u, fmt="%f")
+    np.savetxt(path, u, fmt="%g")
 
 
 def plot_solutions():
