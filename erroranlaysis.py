@@ -10,15 +10,16 @@ def main():
     it in a textfile table with the log10 of the step-size."""
 
     dir = os.path.dirname(os.path.realpath(__file__))
+    name = input("Label data: ")
     # preping arrays:
     N = np.array([10, 100, 1000, 10000, 100000, 1000000, 10000000])
     h = np.empty(len(N))
     epsilon = np.empty(len(N))
 
-    for i in range(len(N)):  # reading data:
-        u_num = np.loadtxt("%s/data_files/test%i.dat" % (dir, 1+i))
-        u_anal = np.loadtxt("%s/data_files/anal_solution_for_test%i.dat"
-                            % (dir, 1+i))
+    for i in range(len(N)):  # reading data from files:
+        u_num = np.loadtxt("%s/data_files/%s%i.dat" % (dir, name, 1+i))
+        u_anal = np.loadtxt("%s/data_files/anal_solution_for_%s%i.dat"
+                            % (dir, name, 1+i))
 
         h[i] = np.log10(1/len(u_num))  # calculating log 10 of step-size.
 
@@ -30,7 +31,8 @@ def main():
     table = np.empty((len(N), 2))
     table[:, 0] = h
     table[:, 1] = epsilon
-    np.savetxt("%s/data_files/error_table.dat" % dir, table, fmt="%f")
+    np.savetxt("%s/data_files/error_table_%s.dat" % (dir, name), table,
+               fmt="%f")
 
 
 if __name__ == '__main__':

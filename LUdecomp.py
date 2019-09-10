@@ -1,41 +1,43 @@
 # Project 1 FYS3150, Anders P. Åsbø
-import pythonLibrary.computationalLib as cp
+import scipy.linalg as sp
 import data_generator as gen
 import numpy as np
 import timeit as time
-import matplotlib.pyplot as plt
 import os
 
 dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def main():
+    """Program uses LU-decomposition to solve Au=g"""
+
+    # getting dimensions of matrix, and labeling data:
     global N
     N = int(eval(input("Give value for N: ")))
     name = "LUtest%i" % N
 
+    # generating data:
     x = np.linspace(0, 1, N)
     h = (x[-1]-x[0])/N
     gen.generate_data(x, name)
-    b = np.loadtxt("%s/data_files/%s.dat" % (dir, name))*h**2
+    g = np.loadtxt("%s/data_files/%s.dat" % (dir, name))*h**2
 
-    A = np.zeros((N, N))
-    A = Afunc(A)
+    A = np.zeros((N, N))  # creating zero matrix.
+    A = Afunc(A)  # populating the three diagonals.
 
-    solver = cp.pylib()
-    start = time.default_timer()
-    LU, a, d = solver.luDecomp(A)
-    b = solver.luBackSubst(LU, a, b)
+    start = time.default_timer()  # timing solve.
+    LU, piv = sp.lu_factor(A)  # decomp and forward sub.
+    u = sp.lu_solve((LU, piv), g)  # backward sub.
     end = time.default_timer()
-    print("Time spent on LU %g" % (end-start))
+    print("Time spent on LU %g" % (end-start))  # printing elapsed time.
 
-    plt.figure()
-    plt.plot(x, b)
-    # plt.show()
+    # saving numerical solution:
+    np.savetxt("%s/data_files%s.dat" % (dir, name), u, fmt="%f")
 
 
 def Afunc(A):
-    """Function that populates tridiagonal matrix."""
+    """Function that populates tridiagonal matrix with 2 along diagonal,
+    and -1 as the non-zero, off-diagonal elements."""
     for i in range(N):
         for j in range(N):
             if i == j:
@@ -50,3 +52,11 @@ def Afunc(A):
 
 if __name__ == '__main__':
     main()
+
+# example run:
+"""
+$ python3 LUdecomp.py
+Give value for N: 1e4
+Time spent on LU 6.23319
+"""
+# data is saved to files.
