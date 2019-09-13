@@ -380,7 +380,7 @@ There are other possible factors at play, such as seperate processes taking up C
 
 To evaluate the accuracy of the specialized Thomas algorithm, I ran \hyperref[A:2]{"project\_specialized.py"} for values of \(N=10^{i}\) where \(i=1,2,...,7\). To compare the numerical and analytical values, I used \hyperref[A:4]{"erroranalysis.py"(A.4)} which reads each data set, and stores a \(7\times 2\)-matrix in a textfile containing the \(\log_{10}\) of the maximum relativ error for each value of \(N\), and the \(log_{10}\) of the coresponding step size. The resulting values in \hyperref[tab:431]{table III} shows that the maximum relativ error of the numerical solution decreases by approximatly one order of magnitude when the step size was decreased by one order of magnitude.
 
-\hyperref[A:4]{"erroranalysis.py"} did output "RuntimeWarning: divide by zero encountered in log10". It was found to happen for \(N=\SI{10e+05}{•}\), and by saving and opening the corresponding array of relativ errors, I found that some of the values were \(0\). This does not appear to have affected the resulting maximum error.
+\hyperref[A:4]{"erroranalysis.py"} did output "RuntimeWarning: divide by zero encountered in log10". It was found to happen for \(N=\SI{10e+05}{}\), and by saving and opening the corresponding array of relativ errors, I found that some of the values were \(0\). This does not appear to have affected the resulting maximum error.
 
 \subsection{Comparison with LU-decomposition}\label{subsec:44}
 \begin{table}[H]
