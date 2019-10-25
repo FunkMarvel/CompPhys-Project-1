@@ -1,10 +1,12 @@
 # Project 1 FYS3150, Anders P. Åsbø
 # general tridiagonal matrix.
-import data_generator as gen
-import numpy as np
 import os
-import matplotlib.pyplot as plt
 import timeit as time
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+import data_generator as gen
 
 
 def main():
@@ -33,7 +35,7 @@ def init_data():
     name = input("Label of data-sets without file extension: ")
 
     x = np.linspace(0, 1, N)  # array of normalized positions.
-    h = (x[0]-x[-1])/N  # defining step-siz.
+    h = (x[0] - x[-1]) / N  # defining step-siz.
 
     gen.generate_data(x, name)  # generating dataanal_name set.
     anal_sol = np.loadtxt("%s/data_files/anal_solution_for_%s.dat" %
@@ -42,11 +44,11 @@ def init_data():
     u = np.empty(N)  # array for unkown values.
     d = np.full(N, 2)  # array for diagonal elements.
     d_prime = np.empty(N)  # array for diagonal after decom. and sub.
-    a = np.full(N-1, -1)  # array for upper, off-center diagonal.
-    b = np.full(N-1, -1)  # array for lower, off-center diagonal.
+    a = np.full(N - 1, -1)  # array for upper, off-center diagonal.
+    b = np.full(N - 1, -1)  # array for lower, off-center diagonal.
     # array for g in matrix eq. Au=g.
     f = np.loadtxt("%s/data_files/%s.dat" % (dir, name))
-    g = f*h**2
+    g = f * h ** 2
     g_prime = np.empty(N)  # array for g after decomp. and sub.
 
 
@@ -60,14 +62,14 @@ def decomp_and_forward_and_backward_sub():
 
     start = time.default_timer()  # times algorithm
     for i in range(1, len(u)):  # performing decomp. and forward sub.
-        decomp_factor = b[i-1]/d_prime[i-1]
-        d_prime[i] = d[i] - a[i-1]*decomp_factor
-        g_prime[i] = g[i] - g_prime[i-1]*decomp_factor
+        decomp_factor = b[i - 1] / d_prime[i - 1]
+        d_prime[i] = d[i] - a[i - 1] * decomp_factor
+        g_prime[i] = g[i] - g_prime[i - 1] * decomp_factor
 
-    for i in reversed(range(1, len(u)-1)):  # performing backward sub.
-        u[i] = (g_prime[i]-a[i]*u[i+1])/d_prime[i]
+    for i in reversed(range(1, len(u) - 1)):  # performing backward sub.
+        u[i] = (g_prime[i] - a[i] * u[i + 1]) / d_prime[i]
     end = time.default_timer()
-    print("Time spent on loop %e" % (end-start))
+    print("Time spent on loop %e" % (end - start))
 
 
 def save_sol():
@@ -93,7 +95,6 @@ def plot_solutions():
 
 if __name__ == '__main__':
     main()
-
 
 # example run:
 """

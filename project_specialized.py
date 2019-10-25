@@ -1,9 +1,11 @@
 # Project 1 FYS3150, Anders P. Åsbø
-import data_generator as gen
-import numpy as np
 import os
-import matplotlib.pyplot as plt
 import timeit as time
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+import data_generator as gen
 
 
 def main():
@@ -32,17 +34,17 @@ def init_data():
     name = input("Label of data-sets without file extension: ")
 
     x = np.linspace(0, 1, N)  # array of normalized positions.
-    h = (x[0]-x[-1])/N  # defining step-siz.
+    h = (x[0] - x[-1]) / N  # defining step-siz.
 
     gen.generate_data(x, name)  # generating dataanal_name set.
     anal_sol = np.loadtxt("%s/data_files/anal_solution_for_%s.dat" %
                           (dir, name))
 
     u = np.empty(N)  # array for unkown values.
-    s = np.arange(1, N+1)
-    d_prime = 2*(s)/(2*(s+1))  # pre-calculating the 1/d_prime factors.
+    s = np.arange(1, N + 1)
+    d_prime = 2 * (s) / (2 * (s + 1))  # pre-calculating the 1/d_prime factors.
     f = np.loadtxt("%s/data_files/%s.dat" % (dir, name))
-    g = f*h**2
+    g = f * h ** 2
     g_prime = np.empty(N)  # array for g after decomp. and sub.
 
 
@@ -54,13 +56,13 @@ def decomp_and_forward_and_backward_sub():
     g_prime[0] = g[0]
     start = time.default_timer()
     for i in range(1, len(u)):  # performing decomp. and forward sub.
-        g_prime[i] = g[i] + g_prime[i-1]*d_prime[i-1]
+        g_prime[i] = g[i] + g_prime[i - 1] * d_prime[i - 1]
 
-    for i in reversed(range(1, len(u)-1)):  # performing backward sub.
-        u[i] = (g_prime[i] + u[i+1])*d_prime[i-1]
+    for i in reversed(range(1, len(u) - 1)):  # performing backward sub.
+        u[i] = (g_prime[i] + u[i + 1]) * d_prime[i - 1]
 
     end = time.default_timer()
-    print("Time spent on loop %g" % (end-start))
+    print("Time spent on loop %g" % (end - start))
 
 
 def save_sol():
@@ -86,7 +88,6 @@ def plot_solutions():
 
 if __name__ == '__main__':
     main()
-
 
 # example run:
 """

@@ -1,6 +1,7 @@
 # Project 1 FYS3150, Anders P. Åsbø.
-import numpy as np
 import os
+
+import numpy as np
 
 
 def main():
@@ -16,14 +17,14 @@ def main():
     epsilon = np.empty(len(N))
 
     for i in range(len(N)):  # reading data from files:
-        u_num = np.loadtxt("%s/data_files/solution_%s%i.dat" % (dir, name, 1+i))
+        u_num = np.loadtxt("%s/data_files/solution_%s%i.dat" % (dir, name, 1 + i))
         u_anal = np.loadtxt("%s/data_files/anal_solution_for_%s%i.dat"
-                            % (dir, name, 1+i))
+                            % (dir, name, 1 + i))
 
-        h[i] = np.log10(1/len(u_num))  # calculating log 10 of step-size.
+        h[i] = np.log10(1 / len(u_num))  # calculating log 10 of step-size.
 
         # calculating log10 of relative error:
-        err = np.abs((u_num[1:-2]-u_anal[1:-2])/u_anal[1:-2])
+        err = np.abs((u_num[1:-2] - u_anal[1:-2]) / u_anal[1:-2])
         epsilon[i] = np.max(np.log10(err))
 
         """
