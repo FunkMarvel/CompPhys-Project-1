@@ -17,7 +17,8 @@ def main():
     epsilon = np.empty(len(N))
 
     for i in range(len(N)):  # reading data from files:
-        u_num = np.loadtxt("%s/data_files/solution_%s%i.dat" % (dir, name, 1 + i))
+        u_num = np.loadtxt("%s/data_files/solution_%s%i.dat"
+                           % (dir, name, 1 + i))
         u_anal = np.loadtxt("%s/data_files/anal_solution_for_%s%i.dat"
                             % (dir, name, 1 + i))
 

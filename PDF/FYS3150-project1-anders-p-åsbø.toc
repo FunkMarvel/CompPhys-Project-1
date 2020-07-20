@@ -1,0 +1,26 @@
+\contentsline {title}{Numerical integration using the Thomas algorithm}{1}{section*.2}
+\contentsline {abstract}{Abstract}{1}{section*.1}
+\tocdepth@munge 
+\contentsline {section}{\numberline {}Contents}{1}{section*.3}
+\tocdepth@restore 
+\contentsline {section}{\numberline {I}Introduction}{1}{section*.4}
+\contentsline {section}{\numberline {II}Formalism}{1}{section*.5}
+\contentsline {subsection}{\numberline {A}Underlying theory}{1}{section*.6}
+\contentsline {subsection}{\numberline {B}Deriving an algorithm for square, tridiagonal matricies}{2}{section*.7}
+\contentsline {section}{\numberline {III}Implementation}{2}{section*.8}
+\contentsline {subsection}{\numberline {A}Implementing the general Thomas algorithm}{2}{section*.9}
+\contentsline {subsection}{\numberline {B}Implementing a specialized version of the Thomas algorithm}{3}{section*.10}
+\contentsline {section}{\numberline {IV}Analysis}{3}{section*.11}
+\contentsline {subsection}{\numberline {A}Plotting the genneral Thomas algorithm}{3}{section*.12}
+\contentsline {subsection}{\numberline {B}Benchmarks of the general and specializeed algorithms}{4}{section*.13}
+\contentsline {subsection}{\numberline {C}Error analysis of the specialized Thomas algorithm}{4}{section*.14}
+\contentsline {subsection}{\numberline {D}Comparison with LU-decomposition}{4}{section*.15}
+\contentsline {section}{\numberline {V}Conclusion}{5}{section*.16}
+\contentsline {section}{\numberline {}References}{5}{section*.17}
+\appendix 
+\contentsline {section}{\numberline {A}Program files}{5}{section*.18}
+\contentsline {subsection}{\numberline {1}project.py}{5}{section*.19}
+\contentsline {subsection}{\numberline {2}project\_specialized.py}{5}{section*.20}
+\contentsline {subsection}{\numberline {3}data\_generator.py}{5}{section*.21}
+\contentsline {subsection}{\numberline {4}erroranalysis.py}{5}{section*.22}
+\contentsline {subsection}{\numberline {5}LUdecomp.py}{5}{section*.23}

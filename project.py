@@ -1,5 +1,7 @@
 # Project 1 FYS3150, Anders P. Åsbø
 # general tridiagonal matrix.
+from numba import jit
+
 import os
 import timeit as time
 

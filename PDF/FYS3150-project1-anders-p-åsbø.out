@@ -1,0 +1,23 @@
+\BOOKMARK [0][-]{section*.2}{Numerical integration using the Thomas algorithm}{}% 2
+\BOOKMARK [1][-]{section*.1}{Abstract}{section*.2}% 1
+\BOOKMARK [1][-]{section*.3}{Contents}{section*.2}% 3
+\BOOKMARK [1][-]{section*.4}{Introduction}{section*.2}% 4
+\BOOKMARK [1][-]{section*.5}{Formalism}{section*.2}% 5
+\BOOKMARK [2][-]{section*.6}{Underlying theory}{section*.5}% 6
+\BOOKMARK [2][-]{section*.7}{Deriving an algorithm for square, tridiagonal matricies}{section*.5}% 7
+\BOOKMARK [1][-]{section*.8}{Implementation}{section*.2}% 8
+\BOOKMARK [2][-]{section*.9}{Implementing the general Thomas algorithm}{section*.8}% 9
+\BOOKMARK [2][-]{section*.10}{Implementing a specialized version of the Thomas algorithm}{section*.8}% 10
+\BOOKMARK [1][-]{section*.11}{Analysis}{section*.2}% 11
+\BOOKMARK [2][-]{section*.12}{Plotting the genneral Thomas algorithm}{section*.11}% 12
+\BOOKMARK [2][-]{section*.13}{Benchmarks of the general and specializeed algorithms}{section*.11}% 13
+\BOOKMARK [2][-]{section*.14}{Error analysis of the specialized Thomas algorithm}{section*.11}% 14
+\BOOKMARK [2][-]{section*.15}{Comparison with LU-decomposition}{section*.11}% 15
+\BOOKMARK [1][-]{section*.16}{Conclusion}{section*.2}% 16
+\BOOKMARK [1][-]{section*.17}{References}{section*.2}% 17
+\BOOKMARK [1][-]{section*.18}{Program files}{section*.2}% 18
+\BOOKMARK [2][-]{section*.19}{project.py}{section*.18}% 19
+\BOOKMARK [2][-]{section*.20}{project\137specialized.py}{section*.18}% 20
+\BOOKMARK [2][-]{section*.21}{data\137generator.py}{section*.18}% 21
+\BOOKMARK [2][-]{section*.22}{erroranalysis.py}{section*.18}% 22
+\BOOKMARK [2][-]{section*.23}{LUdecomp.py}{section*.18}% 23
